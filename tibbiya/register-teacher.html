@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>طبيّة | طلب انضمام كأستاذ</title>
+<meta name="theme-color" content="#14304A">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="auth-wrap">
+
+  <!-- Back -->
+  <a href="index.html" class="back-link">← العودة</a>
+
+  <div class="auth-hero">
+    <svg class="mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="32" fill="#14304A"/>
+      <path d="M18 50 V24 A14 14 0 0 1 46 24 V50 Z" fill="#FBF9F6"/>
+      <rect x="6" y="20" width="9" height="32" rx="1.5" fill="#F4A340" transform="rotate(-28 15 52)"/>
+      <circle cx="12.5" cy="36" r="1.3" fill="#14304A" transform="rotate(-28 15 52)"/>
+      <rect x="49" y="20" width="9" height="32" rx="1.5" fill="#F4A340" transform="rotate(28 49 52)"/>
+      <circle cx="55.5" cy="36" r="1.3" fill="#14304A" transform="rotate(28 49 52)"/>
+      <path d="M32 27c-2.6 0-4 1.6-6 1.6-2.1 0-3.3-1.3-3.3 2.6 0 5.2 2 11.7 4 11.7 1.6 0 1.7-3.9 2.6-4.2.6-.2 1 0 1.6 0h2c.6 0 1-.2 1.6 0 .9.3 1 4.2 2.6 4.2 2 0 4-6.5 4-11.7 0-3.9-1.2-2.6-3.3-2.6-2 0-3.4-1.6-6-1.6Z" fill="#14304A"/>
+    </svg>
+    <h1 class="auth-title">انضم كأستاذ 🎓</h1>
+    <p class="auth-sub">أنشئ حساباً وأرسل طلب انضمام كأستاذ — سيُراجَع من قِبَل الإدارة</p>
+  </div>
+
+  <div class="auth-card">
+    <form id="teacherForm" class="email-form" novalidate>
+
+      <div class="form-group">
+        <label for="tFullName">الاسم الكامل</label>
+        <input id="tFullName" type="text" placeholder="د. سارة أحمد" required>
+      </div>
+
+      <div class="form-group">
+        <label for="tEmail">البريد الإلكتروني</label>
+        <input id="tEmail" type="email" placeholder="doctor@hospital.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="tPassword">كلمة المرور</label>
+        <div class="password-wrap">
+          <input id="tPassword" type="password" placeholder="••••••••" required>
+          <button type="button" class="eye-btn" id="tEyeBtn">👁️</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tSpecialty">التخصص</label>
+        <input id="tSpecialty" type="text" placeholder="تشريح / كيمياء حيوية / فيزيولوجيا ..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="tBio">نبذة مختصرة (اختياري)</label>
+        <textarea id="tBio" rows="3" placeholder="خبرتي ومجال تدريسي..."></textarea>
+      </div>
+
+      <div class="notice-box">
+        📋 سيتم مراجعة طلبك من قِبَل الإدارة خلال 24-48 ساعة.
+        ستتلقى إشعاراً عند الموافقة.
+      </div>
+
+      <button type="submit" class="btn-primary" id="teacherSubmitBtn">إرسال الطلب</button>
+      <a href="index.html" class="link-btn" style="display:block;text-align:center;margin-top:12px;">لديك حساب؟ سجّل الدخول</a>
+    </form>
+
+    <!-- Success state -->
+    <div id="successMsg" class="success-state" style="display:none;">
+      <div class="success-icon">✅</div>
+      <h2>تم إرسال طلبك!</h2>
+      <p>سيتم مراجعة طلبك من قِبَل الإدارة وسيُعلَم عند الموافقة.</p>
+      <a href="index.html" class="btn-primary" style="display:block;text-align:center;margin-top:16px;">العودة للصفحة الرئيسية</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+</div>
+
+<script type="module" src="js/firebase-client.js"></script>
+<script type="module">
+  // Small module to handle teacher registration
+  await new Promise(r => setTimeout(r, 300));
+
+  function showToast(msg, type = "info") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = "toast show " + type;
+    setTimeout(() => t.classList.remove("show"), 3000);
+  }
+
+  // Eye toggle
+  const tEye = document.getElementById("tEyeBtn");
+  const tPass = document.getElementById("tPassword");
+  tEye.addEventListener("click", () => {
+    tPass.type = tPass.type === "password" ? "text" : "password";
+    tEye.textContent = tPass.type === "password" ? "👁️" : "🙈";
+  });
+
+  document.getElementById("teacherForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!window.Auth || !window.Api) { showToast("جاري التحميل، حاول مجدداً", "error"); return; }
+
+    const fullName  = document.getElementById("tFullName").value.trim();
+    const email     = document.getElementById("tEmail").value.trim();
+    const password  = document.getElementById("tPassword").value;
+    const specialty = document.getElementById("tSpecialty").value.trim();
+    const bio       = document.getElementById("tBio").value.trim();
+    const btn       = document.getElementById("teacherSubmitBtn");
+
+    if (!fullName || !email || !password || !specialty) {
+      showToast("يرجى ملء جميع الحقول المطلوبة", "error");
+      return;
+    }
+    if (password.length < 6) {
+      showToast("كلمة المرور يجب أن تكون 6 أحرف على الأقل", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "جاري الإرسال...";
+
+    try {
+      // 1. Create account
+      const { data, error } = await window.Auth.signUpWithEmail(email, password, fullName, "");
+      if (error) throw error;
+
+      // 2. Submit teacher request
+      await window.Api.submitTeacherRequest(data.user.uid, { full_name: fullName, email, specialty, bio });
+
+      // 3. Sign out (wait for approval)
+      await window.Auth.signOut();
+
+      // 4. Show success
+      document.getElementById("teacherForm").style.display = "none";
+      document.getElementById("successMsg").style.display  = "block";
+
+    } catch (err) {
+      const msgs = {
+        "auth/email-already-in-use": "البريد الإلكتروني مستخدم بالفعل",
+        "auth/invalid-email":        "البريد الإلكتروني غير صحيح",
+        "auth/too-many-requests":    "محاولات كثيرة — حاول لاحقاً"
+      };
+      showToast(msgs[err.code] || ("خطأ: " + err.message), "error");
+      btn.disabled = false;
+      btn.textContent = "إرسال الطلب";
+    }
+  });
+</script>
+</body>
+</html>

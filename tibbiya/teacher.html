@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>طبيّة | لوحة الأستاذ</title>
+<meta name="theme-color" content="#14304A">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+
+<!-- Auth Guard -->
+<div id="authGuard" class="auth-guard-overlay"><div class="guard-spinner"></div></div>
+
+<div class="admin-shell" id="teacherShell" style="display:none;">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <svg viewBox="0 0 64 64" fill="none" class="admin-logo">
+        <circle cx="32" cy="32" r="32" fill="#14304A"/>
+        <path d="M18 50 V24 A14 14 0 0 1 46 24 V50 Z" fill="#FBF9F6"/>
+        <rect x="6" y="20" width="9" height="32" rx="1.5" fill="#F4A340" transform="rotate(-28 15 52)"/>
+        <circle cx="12.5" cy="36" r="1.3" fill="#14304A" transform="rotate(-28 15 52)"/>
+        <rect x="49" y="20" width="9" height="32" rx="1.5" fill="#F4A340" transform="rotate(28 49 52)"/>
+        <circle cx="55.5" cy="36" r="1.3" fill="#14304A" transform="rotate(28 49 52)"/>
+        <path d="M32 27c-2.6 0-4 1.6-6 1.6-2.1 0-3.3-1.3-3.3 2.6 0 5.2 2 11.7 4 11.7 1.6 0 1.7-3.9 2.6-4.2.6-.2 1 0 1.6 0h2c.6 0 1-.2 1.6 0 .9.3 1 4.2 2.6 4.2 2 0 4-6.5 4-11.7 0-3.9-1.2-2.6-3.3-2.6-2 0-3.4-1.6-6-1.6Z" fill="#14304A"/>
+      </svg>
+      <div>
+        <div class="admin-brand-name">طبيّة</div>
+        <div class="admin-brand-sub">لوحة الأستاذ</div>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" data-tpanel="tp-lectures">
+        <span class="nav-icon">🎬</span> نشر محاضرة
+      </button>
+      <button class="admin-nav-item" data-tpanel="tp-materials">
+        <span class="nav-icon">📄</span> نشر ملزمة
+      </button>
+      <button class="admin-nav-item" data-tpanel="tp-myContent">
+        <span class="nav-icon">📋</span> محتواي
+      </button>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-user-info">
+        <div class="admin-avatar" id="teacherAvatar">أ</div>
+        <div>
+          <div class="admin-user-name" id="teacherName">أستاذ</div>
+          <div class="admin-user-role">معلّم</div>
+        </div>
+      </div>
+      <button class="admin-logout-btn" id="teacherLogoutBtn">🚪 خروج</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- ===== Publish Lecture ===== -->
+    <section class="admin-panel active" id="tp-lectures">
+      <div class="admin-panel-header">
+        <h1>نشر محاضرة جديدة 🎬</h1>
+        <p>اختر المادة وأضف رابط أو ملف المحاضرة</p>
+      </div>
+      <div class="admin-form-card">
+        <div class="admin-form-grid">
+          <div class="form-group">
+            <label>المادة الدراسية</label>
+            <select id="lecSubjectSelect" class="admin-select">
+              <option value="">اختر مادة...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>عنوان المحاضرة</label>
+            <input id="lecTitle" type="text" placeholder="محاضرة رقم 1 — مقدمة">
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>رابط YouTube (اختياري)</label>
+            <input id="lecUrl" type="url" placeholder="https://youtube.com/watch?v=...">
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>رفع ملف فيديو (اختياري)</label>
+            <div class="file-drop" id="lecDrop">
+              📎 اختياري: اختر ملف فيديو من جهازك
+              <input type="file" id="lecFile" accept="video/*" style="display:none;">
+            </div>
+            <div class="upload-progress" id="lecProgress" style="display:none;">
+              <div class="progress-bar"><div class="progress-fill" id="lecProgressFill"></div></div>
+              <span id="lecProgressText">0%</span>
+            </div>
+          </div>
+        </div>
+        <button class="admin-btn-primary" id="publishLecBtn">🚀 نشر المحاضرة</button>
+      </div>
+    </section>
+
+    <!-- ===== Publish Material ===== -->
+    <section class="admin-panel" id="tp-materials">
+      <div class="admin-panel-header">
+        <h1>نشر ملزمة / ملف 📄</h1>
+        <p>ارفع ملفات PDF أو وثائق دراسية</p>
+      </div>
+      <div class="admin-form-card">
+        <div class="admin-form-grid">
+          <div class="form-group">
+            <label>المادة الدراسية</label>
+            <select id="matSubjectSelect" class="admin-select">
+              <option value="">اختر مادة...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>اسم الملف</label>
+            <input id="matTitle" type="text" placeholder="ملزمة الفصل الأول — أ. سارة">
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>ملف PDF</label>
+            <div class="file-drop" id="matDrop">
+              📎 اختر ملف PDF
+              <input type="file" id="matFile" accept=".pdf,application/pdf" style="display:none;">
+            </div>
+            <div class="upload-progress" id="matProgress" style="display:none;">
+              <div class="progress-bar"><div class="progress-fill" id="matProgressFill"></div></div>
+              <span id="matProgressText">0%</span>
+            </div>
+          </div>
+        </div>
+        <button class="admin-btn-primary" id="publishMatBtn">🚀 نشر الملف</button>
+      </div>
+    </section>
+
+    <!-- ===== My Content ===== -->
+    <section class="admin-panel" id="tp-myContent">
+      <div class="admin-panel-header">
+        <h1>محتواي 📋</h1>
+        <p>المحاضرات والملازم التي نشرتها</p>
+      </div>
+      <div class="form-group" style="max-width:300px;">
+        <label>اختر المادة</label>
+        <select id="myContentSubjectSelect" class="admin-select">
+          <option value="">اختر مادة...</option>
+        </select>
+      </div>
+      <div class="admin-tabs" style="margin-top:16px;">
+        <button class="admin-tab active" data-tsubtab="my-lec-tab">🎬 محاضراتي</button>
+        <button class="admin-tab" data-tsubtab="my-mat-tab">📄 ملازمي</button>
+      </div>
+      <div class="admin-subtab active" id="my-lec-tab">
+        <div id="myLecList" class="admin-list" style="margin-top:12px;">
+          <div class="admin-empty">اختر مادة</div>
+        </div>
+      </div>
+      <div class="admin-subtab" id="my-mat-tab">
+        <div id="myMatList" class="admin-list" style="margin-top:12px;">
+          <div class="admin-empty">اختر مادة</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+<script type="module" src="js/firebase-client.js"></script>
+<script type="module" src="js/teacher.js"></script>
+</body>
+</html>
