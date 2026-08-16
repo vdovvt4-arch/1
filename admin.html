@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>طبيّة | لوحة الإدارة</title>
+<meta name="theme-color" content="#14304A">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+
+<!-- Auth guard overlay -->
+<div id="authGuard" class="auth-guard-overlay">
+  <div class="guard-spinner"></div>
+</div>
+
+<div class="admin-shell" id="adminShell" style="display:none;">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <svg viewBox="0 0 64 64" fill="none" class="admin-logo">
+        <circle cx="32" cy="32" r="32" fill="#14304A"/>
+        <path d="M18 50 V24 A14 14 0 0 1 46 24 V50 Z" fill="#FBF9F6"/>
+        <rect x="6" y="20" width="9" height="32" rx="1.5" fill="#F4A340" transform="rotate(-28 15 52)"/>
+        <circle cx="12.5" cy="36" r="1.3" fill="#14304A" transform="rotate(-28 15 52)"/>
+        <rect x="49" y="20" width="9" height="32" rx="1.5" fill="#F4A340" transform="rotate(28 49 52)"/>
+        <circle cx="55.5" cy="36" r="1.3" fill="#14304A" transform="rotate(28 49 52)"/>
+        <path d="M32 27c-2.6 0-4 1.6-6 1.6-2.1 0-3.3-1.3-3.3 2.6 0 5.2 2 11.7 4 11.7 1.6 0 1.7-3.9 2.6-4.2.6-.2 1 0 1.6 0h2c.6 0 1-.2 1.6 0 .9.3 1 4.2 2.6 4.2 2 0 4-6.5 4-11.7 0-3.9-1.2-2.6-3.3-2.6-2 0-3.4-1.6-6-1.6Z" fill="#14304A"/>
+      </svg>
+      <div>
+        <div class="admin-brand-name">طبيّة</div>
+        <div class="admin-brand-sub">لوحة الإدارة</div>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" data-panel="panel-overview">
+        <span class="nav-icon">📊</span> نظرة عامة
+      </button>
+      <button class="admin-nav-item" data-panel="panel-requests">
+        <span class="nav-icon">📋</span> طلبات الأساتذة
+        <span class="badge" id="requestsBadge" style="display:none;"></span>
+      </button>
+      <button class="admin-nav-item" data-panel="panel-subjects">
+        <span class="nav-icon">📚</span> إدارة المواد
+      </button>
+      <button class="admin-nav-item" data-panel="panel-lectures">
+        <span class="nav-icon">🎬</span> إدارة المحاضرات
+      </button>
+      <button class="admin-nav-item" data-panel="panel-users">
+        <span class="nav-icon">👥</span> إدارة المستخدمين
+      </button>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-user-info">
+        <div class="admin-avatar" id="adminAvatar">أ</div>
+        <div>
+          <div class="admin-user-name" id="adminName">مسؤول</div>
+          <div class="admin-user-role">Admin</div>
+        </div>
+      </div>
+      <button class="admin-logout-btn" id="adminLogoutBtn">🚪 خروج</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+
+    <!-- ===== Overview Panel ===== -->
+    <section class="admin-panel active" id="panel-overview">
+      <div class="admin-panel-header">
+        <h1>نظرة عامة 📊</h1>
+        <p>إحصائيات المنصة</p>
+      </div>
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="stat-students">—</div>
+          <div class="stat-label">إجمالي الطلاب</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-icon">🎓</div>
+          <div class="stat-value" id="stat-teachers">—</div>
+          <div class="stat-label">الأساتذة</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-value" id="stat-subjects">—</div>
+          <div class="stat-label">المواد الدراسية</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value" id="stat-requests">—</div>
+          <div class="stat-label">طلبات معلّقة</div>
+        </div>
+      </div>
+      <div class="quick-actions-header">
+        <h2>إجراءات سريعة</h2>
+      </div>
+      <div class="quick-actions">
+        <button class="quick-action-btn" onclick="switchPanel('panel-subjects')">
+          <span>📚</span> إضافة مادة جديدة
+        </button>
+        <button class="quick-action-btn" onclick="switchPanel('panel-requests')">
+          <span>📋</span> مراجعة طلبات الأساتذة
+        </button>
+        <button class="quick-action-btn" onclick="switchPanel('panel-users')">
+          <span>👥</span> إدارة المستخدمين
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== Teacher Requests Panel ===== -->
+    <section class="admin-panel" id="panel-requests">
+      <div class="admin-panel-header">
+        <h1>طلبات الأساتذة 📋</h1>
+        <p>راجع طلبات الانضمام كأستاذ وافعل ما يلزم</p>
+      </div>
+      <div class="admin-filter-bar">
+        <button class="filter-btn active" data-filter="pending">معلّقة</button>
+        <button class="filter-btn" data-filter="approved">مقبولة</button>
+        <button class="filter-btn" data-filter="rejected">مرفوضة</button>
+        <button class="filter-btn" data-filter="all">الكل</button>
+      </div>
+      <div id="requestsList" class="admin-list">
+        <div class="admin-loading">جاري التحميل...</div>
+      </div>
+    </section>
+
+    <!-- ===== Subjects Panel ===== -->
+    <section class="admin-panel" id="panel-subjects">
+      <div class="admin-panel-header">
+        <h1>إدارة المواد 📚</h1>
+        <button class="admin-btn-primary" id="addSubjectBtn">+ إضافة مادة</button>
+      </div>
+
+      <!-- Add/Edit Subject Form -->
+      <div class="admin-form-card" id="subjectFormCard" style="display:none;">
+        <h3 id="subjectFormTitle">إضافة مادة جديدة</h3>
+        <div class="admin-form-grid">
+          <div class="form-group">
+            <label>اسم المادة</label>
+            <input id="subjectTitle" type="text" placeholder="علم التشريح">
+          </div>
+          <div class="form-group">
+            <label>الأيقونة (emoji)</label>
+            <input id="subjectIcon" type="text" placeholder="🦴" maxlength="4">
+          </div>
+          <div class="form-group">
+            <label>اللون (HEX)</label>
+            <input id="subjectColor" type="color" value="#14304A">
+          </div>
+          <div class="form-group">
+            <label>الترتيب</label>
+            <input id="subjectOrder" type="number" value="1" min="1">
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>وصف مختصر</label>
+            <input id="subjectDesc" type="text" placeholder="وصف مختصر للمادة">
+          </div>
+        </div>
+        <div class="admin-form-actions">
+          <button class="admin-btn-primary" id="saveSubjectBtn">💾 حفظ</button>
+          <button class="admin-btn-ghost" id="cancelSubjectBtn">إلغاء</button>
+        </div>
+      </div>
+
+      <div id="subjectsList" class="admin-list">
+        <div class="admin-loading">جاري التحميل...</div>
+      </div>
+    </section>
+
+    <!-- ===== Lectures Panel ===== -->
+    <section class="admin-panel" id="panel-lectures">
+      <div class="admin-panel-header">
+        <h1>إدارة المحاضرات والملازم 🎬</h1>
+      </div>
+      <div class="form-group" style="max-width:320px;">
+        <label>اختر المادة</label>
+        <select id="adminSubjectSelect" class="admin-select">
+          <option>اختر مادة...</option>
+        </select>
+      </div>
+      <div class="admin-tabs" style="margin-top:16px;">
+        <button class="admin-tab active" data-subtab="lectures-tab">🎬 محاضرات</button>
+        <button class="admin-tab" data-subtab="materials-tab">📄 ملازم</button>
+      </div>
+
+      <!-- Lectures Sub-Tab -->
+      <div class="admin-subtab active" id="lectures-tab">
+        <div class="admin-form-card" style="margin-top:16px;">
+          <h3>إضافة محاضرة</h3>
+          <div class="admin-form-grid">
+            <div class="form-group">
+              <label>عنوان المحاضرة</label>
+              <input id="lecTitle" type="text" placeholder="محاضرة رقم 1 - مقدمة">
+            </div>
+            <div class="form-group">
+              <label>رابط YouTube (اختياري)</label>
+              <input id="lecUrl" type="url" placeholder="https://youtube.com/watch?v=...">
+            </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label>رفع ملف فيديو (اختياري)</label>
+              <div class="file-drop" id="adminLecDrop">
+                📎 اختر ملف فيديو
+                <input type="file" id="adminLecFile" accept="video/*" style="display:none;">
+              </div>
+              <div class="upload-progress" id="adminLecProgress" style="display:none;">
+                <div class="progress-bar"><div class="progress-fill" id="adminLecProgressFill"></div></div>
+                <span id="adminLecProgressText">0%</span>
+              </div>
+            </div>
+          </div>
+          <button class="admin-btn-primary" id="addLecBtn">➕ إضافة محاضرة</button>
+        </div>
+        <div id="adminLecList" class="admin-list" style="margin-top:16px;">
+          <div class="admin-empty">اختر مادة أولاً</div>
+        </div>
+      </div>
+
+      <!-- Materials Sub-Tab -->
+      <div class="admin-subtab" id="materials-tab">
+        <div class="admin-form-card" style="margin-top:16px;">
+          <h3>إضافة ملزمة / ملف</h3>
+          <div class="admin-form-grid">
+            <div class="form-group">
+              <label>اسم الملف</label>
+              <input id="matTitle" type="text" placeholder="ملزمة الفصل الأول">
+            </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label>رفع ملف PDF</label>
+              <div class="file-drop" id="adminMatDrop">
+                📎 اختر ملف PDF
+                <input type="file" id="adminMatFile" accept=".pdf,application/pdf" style="display:none;">
+              </div>
+              <div class="upload-progress" id="adminMatProgress" style="display:none;">
+                <div class="progress-bar"><div class="progress-fill" id="adminMatProgressFill"></div></div>
+                <span id="adminMatProgressText">0%</span>
+              </div>
+            </div>
+          </div>
+          <button class="admin-btn-primary" id="addMatBtn">➕ إضافة ملف</button>
+        </div>
+        <div id="adminMatList" class="admin-list" style="margin-top:16px;">
+          <div class="admin-empty">اختر مادة أولاً</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Users Panel ===== -->
+    <section class="admin-panel" id="panel-users">
+      <div class="admin-panel-header">
+        <h1>إدارة المستخدمين 👥</h1>
+      </div>
+      <div class="admin-filter-bar">
+        <button class="filter-btn active" data-userfilter="all">الكل</button>
+        <button class="filter-btn" data-userfilter="student">طلاب</button>
+        <button class="filter-btn" data-userfilter="teacher">أساتذة</button>
+        <button class="filter-btn" data-userfilter="admin">مسؤولون</button>
+      </div>
+      <div id="usersList" class="admin-list">
+        <div class="admin-loading">جاري التحميل...</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="modal-overlay" id="confirmOverlay" style="display:none;">
+  <div class="modal-dialog">
+    <p id="confirmMsg">هل أنت متأكد؟</p>
+    <div class="modal-actions">
+      <button class="admin-btn-danger" id="confirmYes">تأكيد</button>
+      <button class="admin-btn-ghost" id="confirmNo">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+<script type="module" src="js/firebase-client.js"></script>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

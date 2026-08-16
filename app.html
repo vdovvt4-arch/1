@@ -1,0 +1,108 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>طبيّة</title>
+<meta name="theme-color" content="#14304A">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .subject-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #eaeaea; }
+  .subject-img { width: 100%; height: 160px; object-fit: cover; }
+  .subject-info { padding: 15px; }
+  .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border: 1px solid #eee; transition: 0.2s; }
+  .lecture-item:hover { background: #f1f3f5; }
+  .lecture-item h4 { margin: 0; font-size: 14px; color: #14304A; }
+  .top-actions { display: flex; align-items: center; gap: 15px; }
+  .bell-icon { font-size: 20px; cursor: pointer; position: relative; background: none; border: none; padding: 0; }
+  .bell-badge { position: absolute; top: -5px; right: -5px; background: #F4A340; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ TOP BAR ============ -->
+  <div class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 35px; height: 35px;">
+        <circle cx="50" cy="50" r="50" fill="#14304A"/>
+        <path d="M35 30 C35 20, 65 20, 65 30 C65 45, 75 55, 70 70 C65 85, 55 75, 50 65 C45 75, 35 85, 30 70 C25 55, 35 45, 35 30 Z" fill="#FBF9F6"/>
+        <circle cx="50" cy="45" r="5" fill="#F4A340"/>
+      </svg>
+      <span class="brand-name">طبيّة</span>
+    </div>
+    <div class="top-actions">
+      <!-- جرس الإشعارات -->
+      <button class="bell-icon" id="notificationBtn">🔔<span class="bell-badge">1</span></button>
+      <button class="icon-btn" id="openDrawerBtn" aria-label="القائمة">☰</button>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: LECTURES ============ -->
+  <section class="page active" id="page-lectures">
+    <div class="grid-header">
+      <h1>محاضراتي وملازمي</h1>
+      <p id="lecturesGreeting">مرحباً بك في المرحلة الثانية 🦷</p>
+    </div>
+    
+    <!-- المواد والمحاضرات الديناميكية -->
+    <div id="dynamicContentContainer" style="padding: 0 15px 80px 15px;"></div>
+  </section>
+
+  <!-- ============ PAGE: TRACKER / PROFILE ============ -->
+  <section class="page" id="page-profile">
+    <div class="profile-hero">
+      <div class="avatar-ring">
+        <svg viewBox="0 0 126 126">
+          <circle cx="63" cy="63" r="58" fill="none" stroke="#F1EEE7" stroke-width="8"/>
+          <circle id="streakRing" cx="63" cy="63" r="58" fill="none" stroke="#F4A340" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="364"
+                  transform="rotate(-90 63 63)"/>
+        </svg>
+        <img id="avatarImg" alt="" style="display:none;">
+        <div class="avatar-fallback" id="avatarFallback">ط</div>
+      </div>
+      <h2 class="profile-name" id="profileName">طالب طب أسنان</h2>
+      <p class="profile-username" id="profileUsername">@student</p>
+      <button class="edit-profile-btn" id="editProfileBtn">✏️ تعديل الملف</button>
+    </div>
+  </section>
+
+  <!-- ============ PAGE: SETTINGS ============ -->
+  <section class="page" id="page-settings">
+    <div class="grid-header">
+      <h1>الإعدادات</h1>
+      <p>تحكّم بحسابك وتفضيلاتك</p>
+    </div>
+    <div class="settings-group">
+      <button class="settings-row" style="width:100%; border:none; background:none; color:var(--warn);" id="logoutBtn">
+[16/08/2026 05:25 م] عبدالله فاضل | Abdluh fudil .: <div class="row-left">🚪 تسجيل الخروج</div><span>›</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="page-lectures">
+      <span class="n-icon">📚</span> المحاضرات
+    </button>
+    <button class="nav-item" data-page="page-profile">
+      <span class="n-icon">📈</span> المتابعة
+    </button>
+    <button class="nav-item" data-page="page-settings">
+      <span class="n-icon">⚙️</span> الإعدادات
+    </button>
+  </nav>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/firebase-client.js"></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
